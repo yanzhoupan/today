@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"bufio"
@@ -13,14 +13,12 @@ const (
 
 type today struct {
 	name  string
-	date  string
 	lines []string
 }
 
 func NewToday() *today {
 	return &today{
 		name:  "tmp",
-		date:  "today",
 		lines: []string{},
 	}
 }
@@ -39,7 +37,7 @@ func (t *today) AddPoints() {
 	fmt.Println(tasks)
 }
 
-func (t *today) DelPoints() {
+func (t *today) DelPoints(points string) {
 	return
 }
 
@@ -69,7 +67,7 @@ func (t *today) Clean() {
 
 }
 
-func IsFlagPassed(name string) bool {
+func IsFlagPassedIn(name string) bool {
 	found := false
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == name {
