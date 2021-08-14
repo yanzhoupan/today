@@ -1,25 +1,43 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"bufio"
 	"os"
 )
 
-type checklist struct {
-	name string
-	date string
-	lines []string
-}
+var (
+	add    = flag.Bool("add", false, "")
+	del    = flag.String("del", "", "")
+	modify = flag.Int("modify", 0, "")
+	list   = flag.Int("list", 999, "")
+	show   = flag.String("show", "today", "")
+	clean  = flag.Bool("clean", false, "")
+)
 
-func main(){
-	fmt.Println("input your today's tasks:")
-	var tasks string
-	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan(){
-		tasks = scanner.Text()
+func main() {
+	flag.Parse()
+
+	today := NewToday()
+
+	// show latest file content if no parameter is passed in
+	if len(os.Args) == 1 {
+		today.Show()
+		return
 	}
-	fmt.Println(tasks)
+
+	// take in one parameter at a time
+	if len(os.Args) > 2 {
+		fmt.Println("Please input one parameter at a time!")
+		os.Exit(1)
+	}
+
+	if *add {
+		today.AddPoints()
+		return
+	}
+
+	fmt.Println(*clean)
 	return
 
 }
