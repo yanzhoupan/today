@@ -8,18 +8,21 @@ import (
 )
 
 var (
-	add    = flag.Bool("add", false, "")
-	del    = flag.String("del", "", "")
-	modify = flag.Int("modify", 0, "")
-	list   = flag.Int("list", 999, "")
-	show   = flag.String("show", "today", "")
-	clean  = flag.Bool("clean", false, "")
+	add     = flag.Bool("add", false, "")
+	check   = flag.String("check", "", "")
+	del     = flag.String("del", "", "")
+	modify  = flag.Int("modify", 0, "")
+	ls      = flag.Bool("ls", false, "")
+	lsLimit = flag.Int("lsLimit", 999, "")
+	show    = flag.String("show", "today", "")
+	clean   = flag.Bool("clean", false, "")
 )
 
 func main() {
 	flag.Parse()
 
 	today := util.NewToday()
+	today.LoadLatest()
 
 	// show latest file content if no parameter is passed in
 	if len(os.Args) == 1 {
@@ -34,8 +37,14 @@ func main() {
 	}
 
 	// add points to today
-	if *add {
+	if util.IsFlagPassedIn("add") {
 		today.AddPoints()
+		return
+	}
+
+	// check points
+	if util.IsFlagPassedIn("check") {
+		today.CheckPoints(*check)
 		return
 	}
 
@@ -48,9 +57,12 @@ func main() {
 
 	// modify one point
 	if util.IsFlagPassedIn("modify") {
-		modifyPoint := *modify
-		fmt.Println(modifyPoint)
-		today.ModifyPoint(modifyPoint)
+		fmt.Println(*modify)
+		today.ModifyPoint(*modify)
+	}
+
+	if util.IsFlagPassedIn("clean") {
+		today.Clean()
 	}
 
 }
