@@ -73,9 +73,10 @@ func (t *today) AddPoints() {
 	}
 
 	t.name = time.Now().Format("2006-01-02")
-	t.lines = strings.Split(tasks, "|")
-	for idx, line := range t.lines {
-		t.lines[idx] = fmt.Sprintf("%d) ", idx+1) + line + " |" + TODO + "\n"
+	currTasksCnt := len(t.lines)
+	lines := strings.Split(tasks, "|")
+	for idx, line := range lines {
+		t.lines = append(t.lines, fmt.Sprintf("%d) ", currTasksCnt+idx+1)+line+" |"+TODO+"\n")
 	}
 	t.ToFile()
 }
@@ -170,7 +171,7 @@ func (t *today) ToFile() {
 	defer file.Close()
 
 	write := bufio.NewWriter(file)
-	for idx, _ := range t.lines {
+	for idx := range t.lines {
 		write.WriteString(t.lines[idx])
 	}
 	write.Flush()
