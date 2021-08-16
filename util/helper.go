@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
+	"strings"
 )
 
 // Show a given file
@@ -35,6 +37,7 @@ func IsFlagPassedIn(name string) bool {
 	return found
 }
 
+// Get all file names in the given foler
 func FileNames(folder string) []string {
 	fileInfoList, err := ioutil.ReadDir(FOLDER)
 	if err != nil {
@@ -47,4 +50,30 @@ func FileNames(folder string) []string {
 	}
 
 	return fileNames
+}
+
+// List limit number of files
+func ListFiles(limit int) {
+	fileNames := FileNames(FOLDER)
+	if limit == -1 {
+		limit = len(fileNames)
+	}
+	if len(fileNames) == 0 {
+		fmt.Println("Nothing to show, please add your first note.")
+		return
+	}
+	for idx := 0; idx < limit; idx += 1 {
+		fmt.Println(fmt.Sprintf("\033[1;36m%s\033[0m", fileNames[idx]))
+	}
+}
+
+func DescLineIndex(line string, descCnt int) string {
+	contents := strings.SplitN(line, ")", 2)
+	if newIdx, err := strconv.Atoi(contents[0]); err == nil {
+		rest := contents[1]
+		return fmt.Sprintf("%d", newIdx) + ") " + rest
+	}
+	fmt.Println("Error when convert string to int: ", contents[0])
+	os.Exit(1)
+	return "error"
 }

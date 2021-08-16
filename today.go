@@ -8,14 +8,14 @@ import (
 )
 
 var (
-	add     = flag.Bool("add", false, "")
-	check   = flag.String("check", "", "")
-	del     = flag.String("del", "", "")
-	modify  = flag.Int("modify", 0, "")
-	ls      = flag.Bool("ls", false, "")
-	lsLimit = flag.Int("lsLimit", 999, "")
-	show    = flag.String("show", "today", "")
-	clean   = flag.Bool("clean", false, "")
+	add    = flag.Bool("add", false, "")
+	check  = flag.String("check", "", "")
+	del    = flag.String("del", "", "")
+	modify = flag.Int("mod", 0, "")
+	ls     = flag.Bool("ls", false, "")
+	ll     = flag.Int("ll", -1, "")
+	show   = flag.String("show", "today", "")
+	clear  = flag.Bool("clear", false, "")
 )
 
 func main() {
@@ -50,19 +50,28 @@ func main() {
 
 	// delete points from today
 	if util.IsFlagPassedIn("del") {
-		deletePoints := *del
-		fmt.Println(deletePoints)
-		today.DelPoints(deletePoints)
+		today.DelPoints(*del)
+		return
 	}
 
 	// modify one point
 	if util.IsFlagPassedIn("modify") {
-		fmt.Println(*modify)
 		today.ModifyPoint(*modify)
+		return
 	}
 
-	if util.IsFlagPassedIn("clean") {
-		today.Clean()
+	if util.IsFlagPassedIn("clear") {
+		today.Clear()
+		return
 	}
 
+	if util.IsFlagPassedIn("ls") {
+		util.ListFiles(-1)
+		return
+	}
+
+	if util.IsFlagPassedIn("ll") {
+		util.ListFiles(*ll)
+		return
+	}
 }

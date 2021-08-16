@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -93,7 +94,7 @@ func (t *today) CheckPoints(s string) {
 			}
 			t.lines[lineIdx] = strings.TrimSpace(strings.Split(t.lines[lineIdx], "|")[0]) + " |" + DONE + "\n"
 		} else {
-			fmt.Println("Input point can not eonvert to int: ", i)
+			fmt.Println("Input can not eonvert to int: ", i)
 			os.Exit(1)
 		}
 	}
@@ -102,7 +103,39 @@ func (t *today) CheckPoints(s string) {
 
 // Delete points from today
 func (t *today) DelPoints(points string) {
-	return
+	pts := strings.Split(points, ",")
+	sort.Strings(pts)
+	for _, p := range pts {
+		if idx, err := strconv.Atoi(p); err == nil {
+			lineIdx := idx - 1
+			if lineIdx < 0 || lineIdx >= len(t.lines) {
+				fmt.Println("Index out of range: ", idx)
+				continue
+			}
+			t.lines[lineIdx] = ""
+		} else {
+			fmt.Println("Input can not eonvert to int: ", p)
+			os.Exit(1)
+		}
+	}
+	t.DelHelper()
+}
+
+func (t *today) DelHelper() {
+	decCnt := 0
+	var newLines []string
+	for _, line := range t.lines {
+		if line == "" {
+			decCnt += 1
+		} else {
+			newLines = append(newLines, DescLineIndex(line, decCnt))
+		}
+	}
+	t.lines = newLines
+	if len(t.lines) == 0 {
+		t.lines = []string{""}
+	}
+	t.ToFile()
 }
 
 // Modify single point
@@ -110,19 +143,18 @@ func (t *today) ModifyPoint(pointIdx int) {
 	return
 }
 
-// List files
-func (t *today) ListFiles(limit int) {
-	fileNames := FileNames(FOLDER)
-	for _, fn := range fileNames {
-		fmt.Println(fn)
-	}
-}
-
 // Show current file
 func (t *today) Show() {
-
-	// fmt.Println("Date: ", t.name)
 	fmt.Println(fmt.Sprintf("\033[1;36m%s: %s\033[0m", "Date", t.name))
+
+	fmtLen := 0
+	for _, line := range t.lines {
+		if len(line) > fmtLen {
+			fmtLen = len(line)
+		}
+	}
+	fmtLen -= 4 // minus the length of status
+
 	for _, line := range t.lines {
 		contents := strings.Split(line, "|")
 		var task string
@@ -140,19 +172,19 @@ func (t *today) Show() {
 		var printLine string
 		if status == TODO {
 			// print red
-			printLine = task + fmt.Sprintf("\033[1;31m[%s]\033[0m", status)
+			printLine = fmt.Sprintf("%-"+fmt.Sprintf("%d", fmtLen)+"s", task) + fmt.Sprintf("\033[1;31m[%s]\033[0m", status)
 		} else if status == DONE {
 			// print green
-			printLine = task + fmt.Sprintf("\033[1;32m[%s]\033[0m", status)
+			printLine = fmt.Sprintf("%-"+fmt.Sprintf("%d", fmtLen)+"s", task) + fmt.Sprintf("\033[1;32m[%s]\033[0m", status)
 		} else {
-			printLine = task
+			printLine = fmt.Sprintf("%-20s", task)
 		}
 		fmt.Println(printLine)
 	}
 }
 
 // Clean all the contents of today
-func (t *today) Clean() {
+func (t *today) Clear() {
 	t.lines = []string{""}
 	t.ToFile()
 }
