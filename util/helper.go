@@ -69,7 +69,8 @@ func ListFiles(limit int) {
 
 func DescLineIndex(line string, descCnt int) string {
 	contents := strings.SplitN(line, ")", 2)
-	if newIdx, err := strconv.Atoi(contents[0]); err == nil {
+	if idx, err := strconv.Atoi(contents[0]); err == nil {
+		newIdx := idx - descCnt
 		rest := contents[1]
 		return fmt.Sprintf("%d", newIdx) + ") " + rest
 	}

@@ -118,10 +118,7 @@ func (t *today) DelPoints(points string) {
 			os.Exit(1)
 		}
 	}
-	t.DelHelper()
-}
 
-func (t *today) DelHelper() {
 	decCnt := 0
 	var newLines []string
 	for _, line := range t.lines {
@@ -131,10 +128,12 @@ func (t *today) DelHelper() {
 			newLines = append(newLines, DescLineIndex(line, decCnt))
 		}
 	}
+
 	t.lines = newLines
 	if len(t.lines) == 0 {
 		t.lines = []string{""}
 	}
+
 	t.ToFile()
 }
 
