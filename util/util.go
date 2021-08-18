@@ -13,7 +13,7 @@ import (
 
 const (
 	// FILE_PATH = "/home/app/github.com.yanzhoupan.today/"
-	FOLDER = "./app/"
+	FOLDER = "~/.github.yanzhoupan.today/"
 	TODO   = "todo"
 	DONE   = "done"
 )
@@ -63,7 +63,7 @@ func (t *today) LoadLatest() {
 	return
 }
 
-// Add points to today
+// AddPoints Add points to today
 func (t *today) AddPoints() {
 	fmt.Println("Input today's tasks (separate with '|'):")
 
@@ -82,7 +82,7 @@ func (t *today) AddPoints() {
 	t.ToFile()
 }
 
-// Check points
+// CheckPoints Check points
 func (t *today) CheckPoints(s string) {
 	points := strings.Split(s, ",")
 	for _, i := range points {
@@ -94,14 +94,14 @@ func (t *today) CheckPoints(s string) {
 			}
 			t.lines[lineIdx] = strings.TrimSpace(strings.Split(t.lines[lineIdx], "|")[0]) + " |" + DONE + "\n"
 		} else {
-			fmt.Println("Input can not eonvert to int: ", i)
+			fmt.Println("Input can not convert to int: ", i)
 			os.Exit(1)
 		}
 	}
 	t.ToFile()
 }
 
-// Delete points from today
+// DelPoints Delete points from today
 func (t *today) DelPoints(points string) {
 	pts := strings.Split(points, ",")
 	sort.Strings(pts)
@@ -114,7 +114,7 @@ func (t *today) DelPoints(points string) {
 			}
 			t.lines[lineIdx] = ""
 		} else {
-			fmt.Println("Input can not eonvert to int: ", p)
+			fmt.Println("Input can not convert to int: ", p)
 			os.Exit(1)
 		}
 	}
@@ -137,7 +137,7 @@ func (t *today) DelPoints(points string) {
 	t.ToFile()
 }
 
-// Modify single point
+// ModifyPoint Modify single point
 func (t *today) ModifyPoint(pointIdx int) {
 	return
 }
@@ -182,13 +182,13 @@ func (t *today) Show() {
 	}
 }
 
-// Clean all the contents of today
+// Clear Clean all the contents of today
 func (t *today) Clear() {
 	t.lines = []string{""}
 	t.ToFile()
 }
 
-// Write today structure to coressponding file
+// ToFile Write today structure to corresponding file
 func (t *today) ToFile() {
 	var file *os.File
 	var fileErr error
@@ -199,13 +199,26 @@ func (t *today) ToFile() {
 	if fileErr != nil {
 		fmt.Println("Error when creating file: ", fileErr)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
 
 	write := bufio.NewWriter(file)
 	for idx := range t.lines {
-		write.WriteString(t.lines[idx])
+		_, err := write.WriteString(t.lines[idx])
+		if err != nil {
+			fmt.Println("Failed to write string.")
+			return
+		}
 	}
-	write.Flush()
+	err := write.Flush()
+	if err != nil {
+		fmt.Println("Failed to write buffer in to file.")
+		os.Exit(1)
+	}
 	fmt.Println("Today's tasks saved.")
 	t.Show()
 }

@@ -14,7 +14,7 @@ func Show(name string) {
 	return
 }
 
-// Checker whether a dir exists
+// Exists Check whether a dir exists
 func Exists(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -26,7 +26,7 @@ func Exists(path string) bool {
 	return true
 }
 
-// Check if a flag is passed in
+// IsFlagPassedIn Check if a flag is passed in
 func IsFlagPassedIn(name string) bool {
 	found := false
 	flag.Visit(func(f *flag.Flag) {
@@ -37,7 +37,7 @@ func IsFlagPassedIn(name string) bool {
 	return found
 }
 
-// Get all file names in the given foler
+// FileNames Get all file names in the given foler
 func FileNames(folder string) []string {
 	fileInfoList, err := ioutil.ReadDir(FOLDER)
 	if err != nil {
@@ -52,7 +52,7 @@ func FileNames(folder string) []string {
 	return fileNames
 }
 
-// List limit number of files
+// ListFiles List limit number of files
 func ListFiles(limit int) {
 	fileNames := FileNames(FOLDER)
 	if limit == -1 {

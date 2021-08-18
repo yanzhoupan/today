@@ -15,7 +15,7 @@ var (
 	ls     = flag.Bool("ls", false, "")
 	ll     = flag.Int("ll", -1, "")
 	show   = flag.String("show", "today", "")
-	clear  = flag.Bool("clear", false, "")
+	clear  = flag.Bool("clr", false, "")
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	today := util.NewToday()
 	today.LoadLatest()
 
-	// show latest file content if no parameter is passed in
+	// show the latest file content if no parameter is passed in
 	if len(os.Args) == 1 {
 		today.Show()
 		return
@@ -55,12 +55,12 @@ func main() {
 	}
 
 	// modify one point
-	if util.IsFlagPassedIn("modify") {
+	if util.IsFlagPassedIn("mod") {
 		today.ModifyPoint(*modify)
 		return
 	}
 
-	if util.IsFlagPassedIn("clear") {
+	if util.IsFlagPassedIn("clr") {
 		today.Clear()
 		return
 	}
