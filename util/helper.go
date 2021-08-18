@@ -9,10 +9,7 @@ import (
 	"strings"
 )
 
-// Show a given file
-func Show(name string) {
-	return
-}
+
 
 // Exists Check whether a dir exists
 func Exists(path string) bool {
@@ -37,9 +34,9 @@ func IsFlagPassedIn(name string) bool {
 	return found
 }
 
-// FileNames Get all file names in the given foler
+// FileNames Get all file names in the given folder
 func FileNames(folder string) []string {
-	fileInfoList, err := ioutil.ReadDir(FOLDER)
+	fileInfoList, err := ioutil.ReadDir(folder)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -52,21 +49,7 @@ func FileNames(folder string) []string {
 	return fileNames
 }
 
-// ListFiles List limit number of files
-func ListFiles(limit int) {
-	fileNames := FileNames(FOLDER)
-	if limit == -1 {
-		limit = len(fileNames)
-	}
-	if len(fileNames) == 0 {
-		fmt.Println("Nothing to show, please add your first note.")
-		return
-	}
-	for idx := 0; idx < limit; idx += 1 {
-		fmt.Println(fmt.Sprintf("\033[1;36m%s\033[0m", fileNames[idx]))
-	}
-}
-
+// DescLineIndex decrease the index of a line by descCnt, it's used when points are deleted
 func DescLineIndex(line string, descCnt int) string {
 	contents := strings.SplitN(line, ")", 2)
 	if idx, err := strconv.Atoi(contents[0]); err == nil {

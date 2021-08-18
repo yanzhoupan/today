@@ -13,44 +13,67 @@ import (
 
 const (
 	// FILE_PATH = "/home/app/github.com.yanzhoupan.today/"
-	FOLDER = "~/.github.yanzhoupan.today/"
+	FOLDER = "/app/.github_yanzhoupan_today/"
 	TODO   = "todo"
 	DONE   = "done"
 )
 
 type today struct {
-	name  string
-	lines []string
+	homeDir string
+	name    string
+	lines   []string
 }
 
 func NewToday() *today {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("Failed to get homeDir: ", err)
+	}
+
 	return &today{
-		name:  "today",
-		lines: []string{},
+		homeDir: homeDir,
+		name:    "today",
+		lines:   []string{},
 	}
 }
 
-func (t *today) LoadLatest() {
-	if !Exists(FOLDER) {
-		os.Mkdir(FOLDER, os.ModePerm)
-		fmt.Println("Folder created.")
+func (t *today) LoadFile(fileName string) {
+	folderPath := t.homeDir + FOLDER
+	if !Exists(folderPath) {
+		err := os.MkdirAll(folderPath, os.ModePerm)
+		if err != nil {
+			fmt.Println("Failed to create folder: ", err)
+			return
+		}
+		fmt.Println("Folder created: ", folderPath)
 		return
 	}
 
-	// read files latest file
-	fileNames := FileNames(FOLDER)
-	if len(fileNames) == 0 {
-		fmt.Println("Cannot load latest file, no files found...")
-		os.Exit(0)
+	// read the latest file
+	if fileName == "" {
+		fileNames := FileNames(folderPath)
+		if len(fileNames) == 0 {
+			//fmt.Println("Nothing to load, add your first note now!")
+			return
+		}
+		t.name = fileNames[len(fileNames)-1]
+	} else {
+		t.name = fileName
 	}
 
-	t.name = fileNames[len(fileNames)-1]
-	file, err := os.Open(FOLDER + t.name)
+	file, err := os.Open(folderPath + t.name)
 	if err != nil {
 		fmt.Printf("Open file error: %s\n", err)
 		return
 	}
-	defer file.Close()
+
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}(file)
+
 	br := bufio.NewReader(file)
 	for {
 		line, _, err := br.ReadLine()
@@ -137,12 +160,7 @@ func (t *today) DelPoints(points string) {
 	t.ToFile()
 }
 
-// ModifyPoint Modify single point
-func (t *today) ModifyPoint(pointIdx int) {
-	return
-}
-
-// Show current file
+// Show shows the content of today
 func (t *today) Show() {
 	fmt.Println(fmt.Sprintf("\033[1;36m%s: %s\033[0m", "Date", t.name))
 
@@ -193,7 +211,7 @@ func (t *today) ToFile() {
 	var file *os.File
 	var fileErr error
 
-	filePath := FOLDER + t.name
+	filePath := t.homeDir + FOLDER + t.name
 
 	file, fileErr = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0666)
 	if fileErr != nil {
@@ -221,4 +239,33 @@ func (t *today) ToFile() {
 	}
 	fmt.Println("Today's tasks saved.")
 	t.Show()
+}
+
+// ListFiles List limit number of files
+func (t *today) ListFiles(limit int) {
+	folderPath := t.homeDir + FOLDER
+	fileNames := FileNames(folderPath)
+	if limit == -1 {
+		limit = len(fileNames)
+	}
+	if len(fileNames) == 0 {
+		fmt.Println("Nothing to show, please add your first note.")
+		return
+	}
+	for idx := 0; idx < limit; idx += 1 {
+		fmt.Println(fmt.Sprintf("\033[1;36m%s\033[0m", fileNames[idx]))
+	}
+}
+
+// ShowFile a given file
+func (t *today) ShowFile(fileName string) {
+	t.lines = []string{}
+	t.LoadFile(fileName)
+	t.Show()
+	return
+}
+
+// ModifyPoint Modify single point
+func (t *today) ModifyPoint(pointIdx int) {
+	return
 }

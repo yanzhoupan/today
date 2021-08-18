@@ -8,21 +8,21 @@ import (
 )
 
 var (
-	add    = flag.Bool("add", false, "")
-	check  = flag.String("check", "", "")
-	del    = flag.String("del", "", "")
-	modify = flag.Int("mod", 0, "")
-	ls     = flag.Bool("ls", false, "")
-	ll     = flag.Int("ll", -1, "")
-	show   = flag.String("show", "today", "")
-	clear  = flag.Bool("clr", false, "")
+	_     = flag.Bool("add", false, "")      // done
+	check = flag.String("check", "", "")     // done
+	del   = flag.String("del", "", "")       // done
+	mod   = flag.Int("mod", 0, "")           // todo
+	_     = flag.Bool("ls", false, "")       // done
+	_     = flag.Bool("clr", false, "")      // done
+	ll    = flag.Int("ll", -1, "")           // done
+	show  = flag.String("show", "today", "") // todo
 )
 
 func main() {
 	flag.Parse()
 
 	today := util.NewToday()
-	today.LoadLatest()
+	today.LoadFile("") // load latest file
 
 	// show the latest file content if no parameter is passed in
 	if len(os.Args) == 1 {
@@ -56,7 +56,7 @@ func main() {
 
 	// modify one point
 	if util.IsFlagPassedIn("mod") {
-		today.ModifyPoint(*modify)
+		today.ModifyPoint(*mod)
 		return
 	}
 
@@ -66,12 +66,17 @@ func main() {
 	}
 
 	if util.IsFlagPassedIn("ls") {
-		util.ListFiles(-1)
+		today.ListFiles(-1)
 		return
 	}
 
 	if util.IsFlagPassedIn("ll") {
-		util.ListFiles(*ll)
+		today.ListFiles(*ll)
+		return
+	}
+
+	if util.IsFlagPassedIn("show") {
+		today.ShowFile(*show)
 		return
 	}
 }
