@@ -17,8 +17,9 @@ var (
 		"List some hisroty today's, the input is the number of histories to list") // done
 	_      = flag.Bool("clear", false, "") // done
 	show   = flag.String("show", "", "")   // todo
-	export = flag.String("export", "",
+	export = flag.String("export", "2021-08-01|2021-08-23",
 		"Export contents in a given time range to a .txt file") // todo
+	analysis = flag.String("analysis", "word_cloud|2021-08-01|2021-08-23", "Do analysis")
 )
 
 func main() {
@@ -78,6 +79,16 @@ func main() {
 	// show the content of a specific date
 	if util.IsFlagPassedIn("show") {
 		today.ShowFile(*show)
+		return
+	}
+
+	// export contents in a given time range
+	if util.IsFlagPassedIn("export") {
+		return
+	}
+
+	// do analysis
+	if util.IsFlagPassedIn("analysis") {
 		return
 	}
 }
