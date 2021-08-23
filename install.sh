@@ -14,7 +14,7 @@ else
 fi
 
 
-file_name=poems-${goos}-${version}.tar.gz
+file_name=today-${goos}-${version}.tar.gz
 
 url=https://github.com/yanzhoupan/today/releases/download/${version}/${file_name}
 echo "Download url:${url}"
@@ -30,7 +30,7 @@ fi
 tar -xvf "${file_name}"
 
 if [[ "$OSTYPE" == "msys" ]]; then
-  echo "poems download success, run 'poems.exe' in current directory now!"
+  echo "Successfully downloaded!"
   del $file_name
   exit 0
 fi
@@ -39,4 +39,4 @@ sudo cp $binary_name /usr/local/bin/
 rm -rf $binary_name
 rm -rf $file_name
 
-echo "poems install success, run 'poems' now!"
+echo "Successfully installed!"
