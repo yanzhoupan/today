@@ -20,4 +20,6 @@ curl install.sh | bash
 
 ## TODO
 Maybe add -addTomo flag?
+Support export to txt file and download with time range
+Support word cloud analysis of the checklists
 

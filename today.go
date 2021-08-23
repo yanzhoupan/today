@@ -4,25 +4,26 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 	"today/util"
 )
 
 var (
-	_     = flag.Bool("add", false, "")      // done
-	check = flag.String("check", "", "")     // done
-	del   = flag.String("del", "", "")       // done
-	mod   = flag.Int("mod", 0, "")           // todo
-	_     = flag.Bool("ls", false, "")       // done
-	_     = flag.Bool("clr", false, "")      // done
-	ll    = flag.Int("ll", -1, "")           // done
-	show  = flag.String("show", "today", "") // todo
+	_       = flag.Bool("add", false, "")   // done
+	check   = flag.String("check", "", "")  // done
+	del     = flag.String("delete", "", "") // done
+	mod     = flag.Int("modify", 0, "")     // done
+	history = flag.Int("history", 0,
+		"List some hisroty today's, the input is the number of histories to list") // done
+	_    = flag.Bool("clear", false, "")    // done
+	show = flag.String("show", "today", "") // todo
 )
 
 func main() {
 	flag.Parse()
 
 	today := util.NewToday()
-	today.LoadFile("") // load latest file
+	today.LoadFile(time.Now().Format("2006-01-02")) // load latest file
 
 	// show the latest file content if no parameter is passed in
 	if len(os.Args) == 1 {
@@ -49,29 +50,24 @@ func main() {
 	}
 
 	// delete points from today
-	if util.IsFlagPassedIn("del") {
+	if util.IsFlagPassedIn("delete") {
 		today.DelPoints(*del)
 		return
 	}
 
 	// modify one point
-	if util.IsFlagPassedIn("mod") {
+	if util.IsFlagPassedIn("modify") {
 		today.ModifyPoint(*mod)
 		return
 	}
 
-	if util.IsFlagPassedIn("clr") {
+	if util.IsFlagPassedIn("clear") {
 		today.Clear()
 		return
 	}
 
-	if util.IsFlagPassedIn("ls") {
-		today.ListFiles(-1)
-		return
-	}
-
-	if util.IsFlagPassedIn("ll") {
-		today.ListFiles(*ll)
+	if util.IsFlagPassedIn("history") {
+		today.ListFiles(*history)
 		return
 	}
 

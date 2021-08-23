@@ -32,13 +32,14 @@ func NewToday() *today {
 
 	return &today{
 		homeDir: homeDir,
-		name:    "today",
+		name:    time.Now().Format("2006-01-02"),
 		lines:   []string{},
 	}
 }
 
 func (t *today) LoadFile(fileName string) {
 	folderPath := t.homeDir + FOLDER
+
 	if !Exists(folderPath) {
 		err := os.MkdirAll(folderPath, os.ModePerm)
 		if err != nil {
@@ -50,16 +51,15 @@ func (t *today) LoadFile(fileName string) {
 	}
 
 	// read the latest file
-	if fileName == "" {
-		fileNames := FileNames(folderPath)
-		if len(fileNames) == 0 {
-			//fmt.Println("Nothing to load, add your first note now!")
-			return
-		}
-		t.name = fileNames[len(fileNames)-1]
-	} else {
-		t.name = fileName
-	}
+	// if fileName == "" {
+	// 	fileNames := FileNames(folderPath)
+	// 	if len(fileNames) == 0 {
+	// 		return
+	// 	}
+	// 	t.name = fileNames[len(fileNames)-1]
+	// } else {
+	// 	t.name = fileName
+	// }
 
 	file, err := os.Open(folderPath + t.name)
 	if err != nil {
@@ -253,6 +253,9 @@ func (t *today) ListFiles(limit int) {
 		return
 	}
 	for idx := 0; idx < limit; idx += 1 {
+		if idx >= len(fileNames) {
+			return
+		}
 		fmt.Println(fmt.Sprintf("\033[1;36m%s\033[0m", fileNames[idx]))
 	}
 }
@@ -267,5 +270,22 @@ func (t *today) ShowFile(fileName string) {
 
 // ModifyPoint Modify single point
 func (t *today) ModifyPoint(pointIdx int) {
-	return
+	lineIdx := pointIdx - 1
+
+	if lineIdx < 0 || lineIdx >= len(t.lines) {
+		fmt.Println("Index out of range...")
+		os.Exit(1)
+	}
+
+	fmt.Println("Input the new task for this point:")
+
+	var task string
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		task = scanner.Text()
+	}
+
+	t.lines[lineIdx] = fmt.Sprintf("%d) ", pointIdx) + task + " |" + TODO + "\n"
+
+	t.ToFile()
 }
