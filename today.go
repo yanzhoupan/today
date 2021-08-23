@@ -15,8 +15,10 @@ var (
 	mod     = flag.Int("modify", 0, "")     // done
 	history = flag.Int("history", 0,
 		"List some hisroty today's, the input is the number of histories to list") // done
-	_    = flag.Bool("clear", false, "")    // done
-	show = flag.String("show", "today", "") // todo
+	_      = flag.Bool("clear", false, "") // done
+	show   = flag.String("show", "", "")   // todo
+	export = flag.String("export", "",
+		"Export contents in a given time range to a .txt file") // todo
 )
 
 func main() {
@@ -61,16 +63,19 @@ func main() {
 		return
 	}
 
+	// clear today's checklist
 	if util.IsFlagPassedIn("clear") {
 		today.Clear()
 		return
 	}
 
+	// list history days that have checklist
 	if util.IsFlagPassedIn("history") {
 		today.ListFiles(*history)
 		return
 	}
 
+	// show the content of a specific date
 	if util.IsFlagPassedIn("show") {
 		today.ShowFile(*show)
 		return

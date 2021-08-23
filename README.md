@@ -19,7 +19,7 @@ curl install.sh | bash
 | -clr | Clear all the todos for today. Can also use with a checklist name |
 
 ## TODO
-Maybe add -addTomo flag?
 Support export to txt file and download with time range
 Support word cloud analysis of the checklists
+Maybe add -addTomo flag?
 
