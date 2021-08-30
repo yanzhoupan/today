@@ -15,7 +15,7 @@ var (
 	mod     = flag.Int("modify", 0, "Modify a given point in today")      // done
 	history = flag.Int("history", 0,
 		"List some history dates, the input is the number of histories to list") // done
-	_    = flag.Bool("clear", false, "clear today") // done
+	_    = flag.Bool("clear", false, "Clear today's todo list") // done
 	show = flag.String("show", "",
 		"Show the checklist for a given date, for example 'today -show=2006-01-02'") // done
 	export = flag.String("export", "2021-08-01|2021-08-23",
