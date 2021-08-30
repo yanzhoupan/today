@@ -34,9 +34,15 @@ if [[ "$OSTYPE" == "msys" ]]; then
   del $file_name
   exit 0
 fi
+
 sudo cp $binary_name /usr/local/bin/
+
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
+  echo "Failed to install..."
+else
+  echo "Successfully installed!"
+fi
 
 rm -rf $binary_name
 rm -rf $file_name
-
-echo "Successfully installed!"

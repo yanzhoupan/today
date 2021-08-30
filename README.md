@@ -5,7 +5,7 @@
 introduction video here
 
 ## Install (linux and macOS)
-curl -fsSL https://github.com/yanzhoupan/today/blob/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/yanzhoupan/today/main/install.sh | bash
 
 ## Usage
 | Flags | Usage |
