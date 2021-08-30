@@ -262,6 +262,7 @@ func (t *today) ListFiles(limit int) {
 
 // ShowFile a given file
 func (t *today) ShowFile(fileName string) {
+	t.name = fileName
 	t.lines = []string{}
 	t.LoadFile(fileName)
 	t.Show()

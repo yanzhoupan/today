@@ -9,17 +9,18 @@ import (
 )
 
 var (
-	_       = flag.Bool("add", false, "")   // done
-	check   = flag.String("check", "", "")  // done
-	del     = flag.String("delete", "", "") // done
-	mod     = flag.Int("modify", 0, "")     // done
+	_       = flag.Bool("add", false, "Add todo points to today")         // done
+	check   = flag.String("check", "", "Check points for today")          // done
+	remove  = flag.String("remove", "", "Remove given points from today") // done
+	mod     = flag.Int("modify", 0, "Modify a given point in today")      // done
 	history = flag.Int("history", 0,
-		"List some hisroty today's, the input is the number of histories to list") // done
-	_      = flag.Bool("clear", false, "") // done
-	show   = flag.String("show", "", "")   // todo
+		"List some history dates, the input is the number of histories to list") // done
+	_    = flag.Bool("clear", false, "clear today") // done
+	show = flag.String("show", "",
+		"Show the checklist for a given date, for example 'today -show=2006-01-02'") // done
 	export = flag.String("export", "2021-08-01|2021-08-23",
 		"Export contents in a given time range to a .txt file") // todo
-	analysis = flag.String("analysis", "word_cloud|2021-08-01|2021-08-23", "Do analysis")
+	analysis = flag.String("analysis", "word_cloud|2021-08-01|2021-08-23", "Do analysis") // todo
 )
 
 func main() {
@@ -54,7 +55,7 @@ func main() {
 
 	// delete points from today
 	if util.IsFlagPassedIn("delete") {
-		today.DelPoints(*del)
+		today.DelPoints(*remove)
 		return
 	}
 
