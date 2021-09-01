@@ -20,7 +20,7 @@ curl -fsSL https://raw.githubusercontent.com/yanzhoupan/today/main/install.sh | 
 | -clear | Clear all the todos for today. |
 
 ## TODO
-Support export to txt file and download with time range
-Support word cloud analysis of the checklists
-Maybe add -addTomorrow flag?
+- Support export to txt file and download with time range
+- Support word cloud analysis of the checklists
+- Maybe add -addTomorrow flag?
 
