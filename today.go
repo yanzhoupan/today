@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	_       = flag.Bool("add", false, "Add todo points to today")         // done
-	check   = flag.String("check", "", "Check points for today")          // done
-	remove  = flag.String("remove", "", "Remove given points from today") // done
-	mod     = flag.Int("modify", 0, "Modify a given point in today")      // done
-	history = flag.Int("history", 0,
+	_       = flag.Bool("add", false, "Add todo points to today")      // done
+	check   = flag.String("check", "", "Check points for today")       // done
+	uncheck = flag.String("uncheck", "", "Uncheck points for today")   // done
+	del     = flag.String("del", "", "Remove given points from today") // done
+	mod     = flag.Int("modify", 0, "Modify a given point in today")   // done
+	history = flag.Int("ls", 0,
 		"List some history dates, the input is the number of histories to list") // done
 	_    = flag.Bool("clear", false, "Clear today's todo list") // done
 	show = flag.String("show", "",
@@ -49,13 +50,17 @@ func main() {
 
 	// check points
 	if util.IsFlagPassedIn("check") {
-		today.CheckPoints(*check)
+		today.CheckPoints(*check, false)
 		return
 	}
 
+	if util.IsFlagPassedIn("uncheck") {
+		today.CheckPoints(*uncheck, true)
+	}
+
 	// delete points from today
-	if util.IsFlagPassedIn("delete") {
-		today.DelPoints(*remove)
+	if util.IsFlagPassedIn("del") {
+		today.DelPoints(*del)
 		return
 	}
 
@@ -72,7 +77,7 @@ func main() {
 	}
 
 	// list history days that have checklist
-	if util.IsFlagPassedIn("history") {
+	if util.IsFlagPassedIn("ls") {
 		today.ListFiles(*history)
 		return
 	}

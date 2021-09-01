@@ -99,14 +99,20 @@ func (t *today) AddPoints() {
 	t.name = time.Now().Format("2006-01-02")
 	currTasksCnt := len(t.lines)
 	lines := strings.Split(tasks, "|")
-	for idx, line := range lines {
-		t.lines = append(t.lines, fmt.Sprintf("%d) ", currTasksCnt+idx+1)+line+" |"+TODO+"\n")
+	newIdx := 0
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			t.lines = append(t.lines, fmt.Sprintf("%d) ", currTasksCnt+newIdx+1)+strings.TrimSpace(line)+" |"+TODO+"\n")
+			newIdx += 1
+		}
+
 	}
 	t.ToFile()
 }
 
 // CheckPoints Check points
-func (t *today) CheckPoints(s string) {
+func (t *today) CheckPoints(s string, uncheck bool) {
 	points := strings.Split(s, ",")
 	for _, i := range points {
 		if idx, err := strconv.Atoi(i); err == nil {
@@ -115,7 +121,11 @@ func (t *today) CheckPoints(s string) {
 				fmt.Println("Index out of range, point not exists.")
 				continue
 			}
-			t.lines[lineIdx] = strings.TrimSpace(strings.Split(t.lines[lineIdx], "|")[0]) + " |" + DONE + "\n"
+			if !uncheck {
+				t.lines[lineIdx] = strings.TrimSpace(strings.Split(t.lines[lineIdx], "|")[0]) + " |" + DONE + "\n"
+			} else {
+				t.lines[lineIdx] = strings.TrimSpace(strings.Split(t.lines[lineIdx], "|")[0]) + " |" + TODO + "\n"
+			}
 		} else {
 			fmt.Println("Input can not convert to int: ", i)
 			os.Exit(1)
@@ -252,8 +262,8 @@ func (t *today) ListFiles(limit int) {
 		fmt.Println("Nothing to show, please add your first note.")
 		return
 	}
-	for idx := 0; idx < limit; idx += 1 {
-		if idx >= len(fileNames) {
+	for idx := len(fileNames) - 1; idx > len(fileNames)-1-limit; idx -= 1 {
+		if idx < 0 {
 			return
 		}
 		fmt.Println(fmt.Sprintf("\033[1;36m%s\033[0m", fileNames[idx]))
@@ -280,13 +290,17 @@ func (t *today) ModifyPoint(pointIdx int) {
 
 	fmt.Println("Input the new task for this point:")
 
-	var task string
+	task := ""
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		task = scanner.Text()
 	}
 
-	t.lines[lineIdx] = fmt.Sprintf("%d) ", pointIdx) + task + " |" + TODO + "\n"
-
-	t.ToFile()
+	task = strings.TrimSpace(task)
+	if task == "" {
+		t.DelPoints(strconv.Itoa(pointIdx))
+	} else {
+		t.lines[lineIdx] = fmt.Sprintf("%d) ", pointIdx) + task + " |" + TODO + "\n"
+		t.ToFile()
+	}
 }
